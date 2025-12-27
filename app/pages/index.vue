@@ -21,8 +21,32 @@ if (token.value) {
 
   if (data.value) {
     myLinks.value = data.value
-  } else {
+  } else {  
     myLinks.value = []
+  }
+}
+// Delete link
+const deleteLink = async (shortCode) => {
+  if (!confirm("Are you sure you want to delete this link? This cannot be undone.")) {
+    return
+  }
+
+  try {
+    const { error } = await useFetch(`${config.public.apiBase}/api/shorten/${shortCode}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token.value}` }
+    })
+
+    if (error.value) {
+      alert("Failed to delete link")
+      return
+    }
+
+    // Success: Remove from UI immediately
+    myLinks.value = myLinks.value.filter(link => link.short_code !== shortCode)
+    
+  } catch (e) {
+    alert("Network Error")
   }
 }
 
@@ -192,11 +216,13 @@ const qrLink = computed(() => {
                 <span class="block text-[10px] text-gray-400 uppercase">Clicks</span>
               </div>
               
+              
               <NuxtLink :to="`/stats/${link.short_code}`" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition" title="View Analytics">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </NuxtLink>
+               <button @click="deleteLink(link.short_code)" class="p-2 text-red-600 hover:text-red-600 hover:bg-red-50 rounded-full transition" title="Delete Link">Delete</button>
             </div>
 
           </div>
