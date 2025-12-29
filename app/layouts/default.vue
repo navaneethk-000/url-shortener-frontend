@@ -3,7 +3,9 @@ const { token, user, logout } = useAuth()
 const isMenuOpen = ref(false) 
 
 const initial = computed(() => {
-  return user.value?.email ? user.value.email.charAt(0).toUpperCase() : 'U'
+  if (user.value?.name) return user.value.name.charAt(0).toUpperCase()
+  if (user.value?.email) return user.value.email.charAt(0).toUpperCase()
+  return 'U'
 })
 
 const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
@@ -22,7 +24,7 @@ const handleLogout = () => {
         <div class="flex justify-between h-16">
           <div class="flex items-center">
             <NuxtLink to="/" class="text-xl font-bold text-indigo-600 flex items-center">
-              🔗 GoShortener
+              GoShortener
             </NuxtLink>
           </div>
           
@@ -38,7 +40,10 @@ const handleLogout = () => {
                 <div v-if="isMenuOpen" class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 border border-gray-100 ring-1 ring-black ring-opacity-5 transform origin-top-right transition-all">
                   <div class="px-4 py-3 border-b border-gray-100">
                     <p class="text-xs text-gray-500 uppercase font-semibold">Signed in as</p>
+                    <p class="text-sm font-bold text-blue-900 truncate" :title="user?.name">{{ user?.name || "User" }}</p>
                     <p class="text-sm font-bold text-gray-900 truncate" :title="user?.email">{{ user?.email }}</p>
+
+
                   </div>
                   <div class="py-1">
                     <NuxtLink to="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">My Dashboard</NuxtLink>
