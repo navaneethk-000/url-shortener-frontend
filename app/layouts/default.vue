@@ -1,4 +1,6 @@
 <script setup>
+import ToastContainer from '../components/ToastContainer.vue'
+
 const { token, user, logout } = useAuth()
 const isMenuOpen = ref(false) 
 
@@ -104,6 +106,8 @@ const handleLogout = () => {
         </div>
       </div>
     </nav>
+
+    <ToastContainer/>
 
     <main class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12">
       <slot />

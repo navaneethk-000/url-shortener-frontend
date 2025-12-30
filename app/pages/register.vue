@@ -1,15 +1,19 @@
 <script setup>
+import { useToast } from '../composables/useToast'
+
 const name = ref('')
 const email = ref('')
 const password = ref('')
 const errorMsg = ref('')
 const { register } = useAuth()
+const toast = useToast()
 
 const handleRegister = async () => {
   errorMsg.value = ''
   try {
     await register(name.value, email.value, password.value)
-    alert("Success! Please login.")
+    // alert("Success! Please login.")
+    toast.success("Account created successfully!")
     navigateTo('/login')
   } catch (err) {
     errorMsg.value = err.data?.error || "Registration failed"

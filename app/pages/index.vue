@@ -1,7 +1,13 @@
 <script setup>
+import ConfirmModal from '../components/ConfirmModal.vue'
+
 definePageMeta({
   middleware: ["auth"]
 })
+
+const toast = useToast()
+const isModalOpen = ref(false)
+const linkToDelete = ref(null)
 
 const longUrl = ref('')
 const customAlias = ref('')
@@ -9,8 +15,38 @@ const result = ref(null)
 const errorMsg = ref('')
 const myLinks = ref([]) 
 
+
 const config = useRuntimeConfig()
 const { token } = useAuth()
+
+const confirmDelete = (shortCode) => {
+  linkToDelete.value = shortCode
+  isModalOpen.value = true
+}
+
+const executeDelete = async () => {
+  if (!linkToDelete.value) return
+  isModalOpen.value = false // Close modal
+
+  try {
+    const { error } = await useFetch(`${config.public.apiBase}/api/shorten/${linkToDelete.value}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token.value}` }
+    })
+
+    if (error.value) {
+      toast.error(error.value.data?.error || "Failed to delete")
+      return
+    }
+
+    // Success UI Update
+    myLinks.value = myLinks.value.filter(link => link.short_code !== linkToDelete.value)
+    toast.success("Link deleted successfully") // <--- Success Toast
+
+  } catch (e) {
+    toast.error("Network Error")
+  }
+}
 
 const aliasError = computed(() => {
   if (customAlias.value.length > 10) return "Enter an alias with less than 10 characters"
@@ -64,23 +100,6 @@ const shortenUrl = async () => {
     customAlias.value = ''
   } catch (e) {
     errorMsg.value = "Network Connection Error"
-  }
-}
-
-const deleteLink = async (shortCode) => {
-  if (!confirm("Are you sure you want to delete this link?")) return
-  try {
-    const { error } = await useFetch(`${config.public.apiBase}/api/shorten/${shortCode}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token.value}` }
-    })
-    if (error.value) {
-      alert(error.value.data?.error || "Failed to delete")
-      return
-    }
-    myLinks.value = myLinks.value.filter(link => link.short_code !== shortCode)
-  } catch (e) {
-    alert("Network Error")
   }
 }
 
@@ -240,12 +259,20 @@ const qrLink = computed(() => result.value ? `${config.public.apiBase.replace(/\
                 </NuxtLink>
                 
                 <button 
-                  @click="deleteLink(link.short_code)" 
+                  @click="confirmDelete(link.short_code)" 
                   class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                   title="Delete Link"
                 >
                   <span class="text-lg filter drop-shadow-lg">🗑️</span>
                 </button>
+
+                <ConfirmModal
+                 :is-open="isModalOpen"
+                 title="Delete Link?"
+                 message="Are you sure you want to remove this link? This action cannot be undone."
+                 @cancel="isModalOpen = false"
+                 @confirm="executeDelete"
+                />
               </div>
 
             </div>
