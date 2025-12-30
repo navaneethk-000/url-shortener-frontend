@@ -21,10 +21,10 @@ export const useAuth = () => {
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
             // Decode
             const payload = JSON.parse(window.atob(base64))
-            
+
             // SAVE NAME HERE 👇
-            user.value = { 
-                email: payload.email, 
+            user.value = {
+                email: payload.email,
                 id: payload.user_id,
                 name: payload.name
             }
@@ -40,12 +40,12 @@ export const useAuth = () => {
             setUserFromToken(token.value)
         }
     }
-  
+
     // Register
     const register = async (name, email, password) => {
 
-        console.log("API BASE:", config.public.apiBase) 
-        
+        console.log("API BASE:", config.public.apiBase)
+
         const { error } = await useFetch(`${config.public.apiBase}/api/register`, {
             method: 'POST',
             body: { name, email, password }
@@ -53,31 +53,31 @@ export const useAuth = () => {
         if (error.value) throw error.value
         return true
     }
-  
+
     // Login
     const login = async (email, password) => {
         const { data, error } = await useFetch(`${config.public.apiBase}/api/login`, {
             method: 'POST',
             body: { email, password }
         })
-  
+
         if (error.value) throw error.value
-  
+
         // Save Token
         token.value = data.value.token
 
         // Save email for Avatar
-        setUserFromToken(data.value.token) 
-    
+        setUserFromToken(data.value.token)
+
         return true
     }
-  
+
     // Logout
     const logout = () => {
         token.value = null
         user.value = null
         navigateTo('/login')
     }
-  
+
     return { token, user, login, register, logout }
 }

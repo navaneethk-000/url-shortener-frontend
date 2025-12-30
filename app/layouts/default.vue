@@ -20,7 +20,7 @@ const handleLogout = () => {
 
 <template>
   <!-- Deep dark background -->
-  <div class="min-h-screen bg-slate-950 font-sans text-slate-300 selection:bg-indigo-500 selection:text-white relative overflow-x-hidden" @click="isMenuOpen = false">
+  <div class="hide-scrollbar min-h-screen bg-slate-950 font-sans text-slate-300 selection:bg-indigo-500 selection:text-white relative overflow-x-hidden" @click="isMenuOpen = false">
     
     
 
@@ -115,3 +115,16 @@ const handleLogout = () => {
     
   </div>
 </template>
+
+<style>
+  /* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;     
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;       
+}
+
+</style>

@@ -93,7 +93,7 @@ const qrLink = computed(() => {
       </div>
 
       <!-- History Table -->
-      <div class="bg-slate-900 border border-white/10 rounded-2xl shadow-xl overflow-hidden">
+      <div class="bg-slate-900 border border-white/10 rounded-2xl shadow-xl overflow-y-scroll h-[400px] scrollbar-thin scrollbar-black hide-scrollbar">
         
         <!-- Table Header -->
         <div class="px-6 py-5 border-b border-white/5 bg-slate-950/30 backdrop-blur-sm flex justify-between items-center">
@@ -106,17 +106,18 @@ const qrLink = computed(() => {
         </div>
         
         <!-- Responsive Table Wrapper -->
-        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
-          <table class="min-w-full text-left text-sm">
+        <div class="overflow-hidden scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+          <table class="min-w-full text-left text-sm overflow-scroll">
             <thead class="bg-slate-950/50 text-slate-400 border-b border-white/5">
               <tr>
                 <th class="px-6 py-4 font-semibold whitespace-nowrap">Time</th>
                 <th class="px-6 py-4 font-semibold whitespace-nowrap">IP Address</th>
                 <th class="px-6 py-4 font-semibold whitespace-nowrap">Referrer</th>
-                <th class="px-6 py-4 font-semibold w-1/3">User Agent</th>
+                <th class="px-6 py-4 font-semibold">User Agent</th>
+                <th class="px-6 py-4 font-semibold whitespace-nowrap">Location</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-white/5">
+            <tbody class="divide-y divide-white/5 cursor-pointer">
               <tr v-for="click in data.analytics" :key="click.id" class="hover:bg-white/[0.02] transition-colors duration-150">
                 <td class="px-6 py-4 text-slate-300 whitespace-nowrap">
                   {{ new Date(click.clicked_at).toLocaleString() }}
@@ -137,11 +138,18 @@ const qrLink = computed(() => {
                 <td class="px-6 py-4 text-slate-500 text-xs break-all whitespace-normal leading-relaxed max-w-xs">
                   {{ click.user_agent }}
                 </td>
+                <td class="px-6 py-4 text-slate-500">
+                  <span v-if="click.country && click.country !== 'Unknown'" class="flex items-center gap-2">
+                     <!-- You can add a flag icon here later -->
+                   {{ click.city ? click.city + ',':''}}{{ click.country }}
+                     </span>
+                   <span v-else class="text-gray-400">-</span>
+                 </td>
               </tr>
               
               <!-- Empty State -->
               <tr v-if="data.analytics.length === 0">
-                <td colspan="4" class="px-6 py-16 text-center">
+                <td colspan="5" class="px-6 py-16 text-center">
                   <div class="flex flex-col items-center justify-center">
                     <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4">
                        <span class="text-3xl">📉</span>
@@ -151,10 +159,23 @@ const qrLink = computed(() => {
                   </div>
                 </td>
               </tr>
-            </tbody>
+            </tbody>  
           </table>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+  /* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;     
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;       
+}
+
+</style>
