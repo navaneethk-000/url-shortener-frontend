@@ -1,60 +1,45 @@
 export const useAuth = () => {
-    const token = useCookie('auth_token')
+    const tokenCookie = useCookie('auth_token')
+    const token = useState('auth_token_state', () => null)
     const user = useState('auth_user', () => null)
     const config = useRuntimeConfig()
 
-    if (token.value && !user.value) {
-        try {
-            // Simple JWT decode to get email
-            const payload = JSON.parse(atob(token.value.split('.')[1]))
-            user.value = { email: payload.email }
-        } catch (e) {
-            // Token invalid
-            token.value = null
-        }
-    }
-
-    const setUserFromToken = (jwtString) => {
-        try {
-            const base64Url = jwtString.split('.')[1]
-            // Convert Base64Url to Base64
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-            // Decode
-            const payload = JSON.parse(window.atob(base64))
-
-            // SAVE NAME HERE 👇
-            user.value = {
-                email: payload.email,
-                id: payload.user_id,
-                name: payload.name
+    // Helper to decode token and set user state
+    const restoreUser = () => {
+        if (token.value && !user.value) {
+            try {
+                const base64Url = token.value.split('.')[1]
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+                const payload = JSON.parse(window.atob(base64))
+                
+                user.value = { 
+                    email: payload.email, 
+                    id: payload.user_id, 
+                    name: payload.name 
+                }
+            } catch (e) {
+                token.value = null
+                tokenCookie.value = null
             }
-        } catch (e) {
-            token.value = null
-            user.value = null
         }
     }
 
-    if (token.value && !user.value) {
-        // If running on client, decode immediately
-        if (process.client) {
-            setUserFromToken(token.value)
+    // Run on client mount
+    if (process.client) {
+        if (!token.value && tokenCookie.value) {
+            token.value = tokenCookie.value
         }
+        restoreUser()
     }
 
-    // Register
-    const register = async (name, email, password) => {
+    // Watch for cookie changes
+    watch(tokenCookie, (newVal) => {
+        token.value = newVal
+        if (process.client) restoreUser()
+    })
 
-        console.log("API BASE:", config.public.apiBase)
+    // --- ACTIONS ---
 
-        const { error } = await useFetch(`${config.public.apiBase}/api/register`, {
-            method: 'POST',
-            body: { name, email, password }
-        })
-        if (error.value) throw error.value
-        return true
-    }
-
-    // Login
     const login = async (email, password) => {
         const { data, error } = await useFetch(`${config.public.apiBase}/api/login`, {
             method: 'POST',
@@ -63,18 +48,33 @@ export const useAuth = () => {
 
         if (error.value) throw error.value
 
-        // Save Token
+        tokenCookie.value = data.value.token
         token.value = data.value.token
-
-        // Save email for Avatar
-        setUserFromToken(data.value.token)
-
+        
+        // Decode immediately for instant UI update
+        const base64Url = data.value.token.split('.')[1]
+        const payload = JSON.parse(window.atob(base64Url.replace(/-/g, '+').replace(/_/g, '/')))
+        
+        user.value = { 
+            email: payload.email,
+            id: payload.user_id,
+            name: payload.name
+        }
         return true
     }
 
-    // Logout
+    const register = async (name, email, password) => {
+        const { error } = await useFetch(`${config.public.apiBase}/api/register`, {
+            method: 'POST',
+            body: { name, email, password }
+        })
+        if (error.value) throw error.value
+        return true
+    }
+
     const logout = () => {
         token.value = null
+        tokenCookie.value = null
         user.value = null
         navigateTo('/login')
     }
