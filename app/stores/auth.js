@@ -8,7 +8,6 @@ export const useAuthStore = defineStore("auth", {
 
   getters: {
     isLoggedIn: (state) => !!state.token,
-    //  Ensures the avatar updates as soon as user data exists
     userInitial: (state) => {
       if (state.user?.name) return state.user.name.charAt(0).toUpperCase();
       if (state.user?.email) return state.user.email.charAt(0).toUpperCase();
@@ -17,7 +16,22 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    // Helper to decode JWT and set user state
+    async register(name, email, password) {
+      const config = useRuntimeConfig();
+      const { data, error } = await useFetch(
+        `${config.public.apiBase}/api/register`,
+        {
+          method: "POST",
+          body: { name, email, password },
+        }
+      );
+
+      if (error.value) {
+        throw error.value;
+      }
+      return true;
+    },
+
     hydrateUser(tokenStr) {
       if (!tokenStr) return;
       try {
@@ -36,7 +50,6 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    // Runs on App Start
     initAuth() {
       const tokenCookie = useCookie("auth_token");
       if (tokenCookie.value) {
@@ -57,14 +70,9 @@ export const useAuthStore = defineStore("auth", {
 
       if (error.value) throw error.value;
 
-      // Update Token State
       this.token = data.value.token;
-
-      //  Update Cookie (for persistence)
       const tokenCookie = useCookie("auth_token");
       tokenCookie.value = data.value.token;
-
-      // Immediately update the User state in memory
       this.hydrateUser(data.value.token);
 
       return true;
