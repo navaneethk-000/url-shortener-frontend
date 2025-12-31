@@ -1,19 +1,19 @@
 <script setup>
+const authStore = useAuthStore();
+const toastStore = useToastStore();
+
 definePageMeta({
   middleware: ["auth"],
 });
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const toast = useToast();
-const { token } = useAuth();
 const code = route.params.code;
 
 const qrFg = ref("#000000");
 const qrBg = ref("#ffffff");
 const isSaving = ref(false);
 
-// Fetch Data
 const { data, pending, error, refresh } = await useFetch(
   `${config.public.apiBase}/api/stats/${code}`,
   {
@@ -23,7 +23,7 @@ const { data, pending, error, refresh } = await useFetch(
   }
 );
 
-// Ensures previous choices are restored on refresh
+// Ensures previous choices are restored when the page loads or data refreshes
 watch(
   data,
   (newVal) => {
@@ -49,16 +49,18 @@ const saveStyles = async () => {
   try {
     await $fetch(`${config.public.apiBase}/api/shorten/${code}/styles`, {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token.value}` },
+      headers: { Authorization: `Bearer ${authStore.token}` },
       body: {
         qr_color: qrFg.value,
         qr_bg_color: qrBg.value,
       },
     });
-    toast.success("QR Styles saved successfully!");
-    refresh(); // Refresh data to sync state
+
+    // Use Pinia toastStore
+    toastStore.success("QR Styles saved successfully!");
+    refresh();
   } catch (e) {
-    toast.error("Failed to save styles");
+    toastStore.error("Failed to save styles");
   } finally {
     isSaving.value = false;
   }
@@ -68,7 +70,6 @@ const saveStyles = async () => {
 const downloadQR = () => {
   const downloadUrl = qrLink.value + "&download=true";
   const a = document.createElement("a");
-
   a.href = downloadUrl;
   a.setAttribute("download", `qr_${code}.png`);
   document.body.appendChild(a);
@@ -104,6 +105,7 @@ const downloadQR = () => {
       <span>Back to Dashboard</span>
     </NuxtLink>
 
+    <!-- Loading State -->
     <div v-if="pending" class="text-center py-32">
       <div class="relative mx-auto w-16 h-16">
         <div
@@ -118,6 +120,7 @@ const downloadQR = () => {
       </p>
     </div>
 
+    <!-- Error State -->
     <div
       v-else-if="error"
       class="bg-red-500/10 p-8 rounded-2xl border border-red-500/20 text-center max-w-lg mx-auto backdrop-blur-sm"
@@ -173,14 +176,12 @@ const downloadQR = () => {
             QR Customizer
           </h3>
 
-          <!-- Live Preview -->
           <div
             class="bg-white p-3 rounded-xl shadow-lg mb-6 transition-transform hover:scale-105"
           >
             <img :src="qrLink" alt="QR Code" class="w-32 h-32" />
           </div>
 
-          <!-- Color Controls -->
           <div class="w-full space-y-3 mb-6">
             <div
               class="flex justify-between items-center bg-slate-950/50 p-2 rounded border border-white/5"
@@ -243,7 +244,6 @@ const downloadQR = () => {
       <div
         class="bg-slate-900 border border-white/10 rounded-2xl shadow-xl overflow-y-scroll h-[400px] hide-scrollbar"
       >
-        <!-- ... Rest of your table code exactly as it was ... -->
         <div
           class="px-6 py-5 border-b border-white/5 bg-slate-950/30 backdrop-blur-sm flex justify-between items-center"
         >
@@ -277,6 +277,7 @@ const downloadQR = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
+              <!-- DATA ROWS -->
               <tr
                 v-for="click in data.analytics"
                 :key="click.id"
@@ -319,6 +320,7 @@ const downloadQR = () => {
                 </td>
               </tr>
 
+              <!-- Empty records row -->
               <tr v-if="data.analytics.length === 0">
                 <td colspan="5" class="px-6 py-20 text-center">
                   <div class="flex flex-col items-center justify-center">

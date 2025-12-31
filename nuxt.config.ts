@@ -7,25 +7,24 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/x-icon",
-          href: "fevicon-goshortener.png",
+          href: "/fevicon-goshortener.png",
         },
       ],
     },
   },
 
-  ssr:false,
-  
-  compatibilityDate: '2025-07-15',
+  ssr: false,
+
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
-  runtimeConfig: {
-    public: {
-      apiBase: 'http://localhost:8080'
-    }
-  },
+  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
   tailwindcss: {
     exposeConfig: true,
     viewer: true,
   },
-
-})
+  runtimeConfig: {
+    public: {
+      apiBase: "http://localhost:8080",
+    },
+  },
+});
