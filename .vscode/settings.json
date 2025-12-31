@@ -1,0 +1,25 @@
+{
+  "files.trimTrailingWhitespace": false,
+  "window.zoomLevel": 1,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "editor.formatOnPaste": false,
+  "editor.renderWhitespace": "selection",
+  "html.format.wrapAttributes": "force-expand-multiline",
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "workbench.colorTheme": "Default Dark Modern",
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
