@@ -153,7 +153,7 @@ const qrLink = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-2xl mx-auto space-y-8 pb-20">
+  <div class="max-w-2xl mx-auto space-y-8 pb-16 px-4 sm:px-6 lg:px-0">
     <!-- Shortener Card -->
     <div class="relative group">
       <div
@@ -161,51 +161,49 @@ const qrLink = computed(() => {
       ></div>
 
       <div
-        class="relative bg-slate-900 border border-white/10 p-8 rounded-2xl shadow-2xl"
+        class="relative bg-slate-900 border border-white/10 p-6 sm:p-8 rounded-2xl shadow-2xl"
       >
         <h2
-          class="text-3xl font-extrabold text-white mb-8 text-center tracking-tight"
+          class="text-2xl sm:text-3xl font-extrabold text-white mb-6 sm:mb-8 text-center tracking-tight"
         >
           Shorten Your Link
         </h2>
 
-        <div class="space-y-6">
+        <div class="space-y-5 sm:space-y-6">
           <!-- Long URL Input -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2"
-              >Long URL</label
-            >
+            <label class="block text-sm font-medium text-slate-300 mb-2">
+              Long URL
+            </label>
             <input
               v-model="longUrl"
               type="url"
               placeholder="https://super-long-url.com/..."
-              class="block w-full rounded-lg border border-slate-700 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:ring-indigo-500 p-3 shadow-inner transition-colors"
+              class="block w-full rounded-lg border border-slate-700 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 p-3 text-sm sm:text-base shadow-inner transition-colors"
             />
           </div>
 
-          <!-- Grid for Alias -->
-          <div class="grid grid-cols-1 gap-4">
-            <!-- Custom Alias -->
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2"
-                >Custom Alias (Optional)</label
+          <!-- Alias -->
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">
+              Custom Alias (Optional)
+            </label>
+            <div class="flex rounded-lg shadow-sm overflow-hidden">
+              <span
+                class="inline-flex items-center px-4 border border-r-0 border-slate-700 bg-slate-800 text-slate-400 text-sm"
               >
-              <div class="flex shadow-sm rounded-lg">
-                <span
-                  class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-slate-800 text-slate-400 text-sm"
-                  >/</span
-                >
-                <input
-                  v-model="customAlias"
-                  type="text"
-                  placeholder="my-link"
-                  :class="{
-                    'border-red-500/50': aliasError,
-                    'border-slate-700': !aliasError,
-                  }"
-                  class="flex-1 block w-full rounded-r-lg bg-slate-950/50 text-slate-200 border p-3 focus:ring-1 focus:ring-indigo-500"
-                />
-              </div>
+                /
+              </span>
+              <input
+                v-model="customAlias"
+                type="text"
+                placeholder="my-link"
+                :class="{
+                  'border-red-500/50': aliasError,
+                  'border-slate-700': !aliasError,
+                }"
+                class="flex-1 block bg-slate-950/50 text-slate-200 border p-3 text-sm sm:text-base focus:ring-1 focus:ring-indigo-500"
+              />
             </div>
           </div>
 
@@ -216,13 +214,13 @@ const qrLink = computed(() => {
           <button
             @click="shortenUrl"
             :disabled="!longUrl || !!aliasError"
-            class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-3.5 rounded-lg font-bold shadow-lg hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 transition-all transform active:scale-[0.98]"
+            class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 text-white py-3 sm:py-3.5 rounded-lg font-bold text-sm sm:text-base shadow-lg hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 transition-all active:scale-[0.98]"
           >
             Shorten URL
           </button>
         </div>
 
-        <!-- Global Error Message -->
+        <!-- Error -->
         <div
           v-if="errorMsg"
           class="mt-6 p-4 bg-red-500/10 text-red-300 rounded-lg border border-red-500/20 text-center text-sm font-medium"
@@ -238,24 +236,28 @@ const qrLink = computed(() => {
         >
           <div
             v-if="result"
-            class="mt-8 bg-slate-800/50 rounded-xl border border-indigo-500/30 p-6 text-center"
+            class="mt-8 bg-slate-800/50 rounded-xl border border-indigo-500/30 p-5 sm:p-6 text-center"
           >
             <p class="text-green-400 font-semibold mb-3">URL Shortened!</p>
 
             <a
               :href="shortLink"
               target="_blank"
-              class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 break-all block mb-6"
+              class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 break-all block mb-6"
             >
               {{ shortLink }}
             </a>
 
-            <!-- QR Customizer within Success Box -->
+            <!-- QR -->
             <div
               class="bg-slate-950/50 rounded-lg p-4 border border-white/5 space-y-4"
             >
               <div class="bg-white p-3 rounded-lg inline-block shadow-2xl">
-                <img :src="qrLink" alt="QR Code" class="w-40 h-40" />
+                <img
+                  :src="qrLink"
+                  alt="QR Code"
+                  class="w-32 h-32 sm:w-40 sm:h-40"
+                />
               </div>
             </div>
 
@@ -264,7 +266,7 @@ const qrLink = computed(() => {
                 :to="`/stats/${result.short_code}`"
                 class="text-sm font-semibold text-slate-400 hover:text-indigo-400 transition-colors"
               >
-                📊 View Analytics &rarr;
+                📊 View Analytics →
               </NuxtLink>
             </div>
           </div>
@@ -272,17 +274,15 @@ const qrLink = computed(() => {
       </div>
     </div>
 
-    <!-- My Links list -->
+    <!-- My Links -->
     <div
-      v-if="authStore.token && myLinks && myLinks.length > 0"
+      v-if="authStore.token && myLinks?.length"
       class="bg-slate-900 border border-white/10 rounded-2xl shadow-xl overflow-hidden"
     >
       <div
-        class="px-6 py-4 border-b border-white/5 bg-slate-950/30 flex justify-between items-center"
+        class="px-5 sm:px-6 py-4 border-b border-white/5 bg-slate-950/30 flex justify-between items-center"
       >
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          My Links
-        </h3>
+        <h3 class="text-lg font-bold text-white">My Links</h3>
         <span
           class="text-xs font-semibold text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full"
         >
@@ -290,22 +290,22 @@ const qrLink = computed(() => {
         </span>
       </div>
 
-      <ul class="divide-y divide-white/5 max-h-[500px] overflow-y-auto">
+      <ul class="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
         <li
           v-for="link in myLinks"
           :key="link.id"
-          class="px-6 py-5 hover:bg-white/[0.02] transition"
+          class="px-5 sm:px-6 py-4 hover:bg-white/[0.02] transition"
         >
           <div
-            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
           >
-            <div class="flex-1 min-w-0 pr-4">
+            <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <span class="text-slate-500">/</span>
                 <a
                   :href="`${config.public.apiBase}/${link.short_code}`"
                   target="_blank"
-                  class="text-indigo-400 font-bold hover:underline text-lg"
+                  class="text-indigo-400 font-bold hover:underline text-base sm:text-lg"
                 >
                   {{ link.short_code }}
                 </a>
@@ -315,27 +315,28 @@ const qrLink = computed(() => {
               </p>
             </div>
 
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-4">
               <div
-                class="bg-slate-950 px-3 py-1 rounded-full border border-white/5 text-center"
+                class="bg-slate-950 px-3 py-1.5 rounded-full border border-white/5 text-center"
               >
-                <span class="block text-sm font-bold text-white">{{
-                  link.total_clicks
-                }}</span>
-                <span class="block text-[10px] text-slate-500 uppercase"
-                  >Clicks</span
-                >
+                <span class="block text-sm font-bold text-white">
+                  {{ link.total_clicks }}
+                </span>
+                <span class="block text-[10px] text-slate-500 uppercase">
+                  Clicks
+                </span>
               </div>
 
-              <div class="flex items-center space-x-1">
+              <div class="flex gap-1">
                 <NuxtLink
                   :to="`/stats/${link.short_code}`"
-                  class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all"
-                  >📊</NuxtLink
+                  class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition"
                 >
+                  📊
+                </NuxtLink>
                 <button
                   @click="confirmDelete(link.short_code)"
-                  class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                  class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition"
                 >
                   🗑️
                 </button>
