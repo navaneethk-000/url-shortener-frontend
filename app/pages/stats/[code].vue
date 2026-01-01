@@ -264,7 +264,7 @@ const downloadQR = () => {
                 <th class="px-3 sm:px-6 py-4 font-semibold">Location</th>
                 <th class="px-3 sm:px-6 py-4 font-semibold">IP</th>
                 <th class="px-3 sm:px-6 py-4 font-semibold">Referrer</th>
-                <th class="px-3 sm:px-6 py-4 font-semibold">User Agent</th>
+                <th class="px-3 sm:px-6 py-4 font-semibold">Device Info</th>
               </tr>
             </thead>
 

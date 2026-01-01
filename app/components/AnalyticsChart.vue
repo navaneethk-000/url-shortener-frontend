@@ -60,7 +60,7 @@ const initChart = () => {
       labels: labels,
       datasets: [
         {
-          label: "Cumulative Clicks",
+          label: "Clicks",
           data: values,
           fill: true,
           backgroundColor: gradient,
