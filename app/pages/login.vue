@@ -93,7 +93,7 @@ const handleLogin = async () => {
               v-model="email"
               type="email"
               required
-              placeholder="someone@gmail.com"
+              placeholder="you@example.com"
               class="w-full rounded-xl border border-slate-700/50 bg-slate-950/60 text-slate-200 placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:bg-slate-900 pl-10 py-3 sm:py-3.5 text-sm sm:text-base transition-all shadow-inner"
             />
           </div>

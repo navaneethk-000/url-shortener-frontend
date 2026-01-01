@@ -6,9 +6,17 @@ const name = ref("");
 const email = ref("");
 const password = ref("");
 const errorMsg = ref("");
+const confirmPassword = ref("");
 
 const handleRegister = async () => {
   errorMsg.value = "";
+
+  if (password.value !== confirmPassword.value) {
+    errorMsg.value = "Passwords do not match";
+    toastStore.error(errorMsg.value);
+    return;
+  }
+
   try {
     await authStore.register(name.value, email.value, password.value);
     toastStore.success("Account created successfully!");
@@ -48,7 +56,7 @@ const handleRegister = async () => {
             v-model="name"
             type="text"
             required
-            placeholder="John Doe"
+            placeholder="Enter your name"
             class="block w-full rounded-lg border border-slate-700 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm sm:text-base p-2.5 sm:p-3 transition-colors"
           />
         </div>
@@ -74,6 +82,18 @@ const handleRegister = async () => {
           </label>
           <input
             v-model="password"
+            type="password"
+            required
+            placeholder="••••••••"
+            class="block w-full rounded-lg border border-slate-700 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm sm:text-base p-2.5 sm:p-3 transition-colors"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">
+            Confirm Password
+          </label>
+          <input
+            v-model="confirmPassword"
             type="password"
             required
             placeholder="••••••••"
