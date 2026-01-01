@@ -246,7 +246,16 @@ const downloadQR = () => {
         <div
           class="px-4 sm:px-6 py-4 border-b border-white/5 bg-slate-950/30 flex justify-between items-center"
         >
-          <h3 class="text-lg font-bold text-white">📊 Recent Activity</h3>
+          <h3
+            class="text-lg font-bold text-white flex items-center justify-center text-center gap-1"
+          >
+            <Icon
+              name="mdi:chart-box-outline"
+              :size="25"
+              class="text-indigo-400"
+            />
+            Recent Activity
+          </h3>
           <span
             class="text-xs font-semibold text-slate-400 bg-slate-800 border border-white/5 px-2.5 py-1 rounded-full"
           >
@@ -255,7 +264,7 @@ const downloadQR = () => {
         </div>
 
         <div class="overflow-x-auto">
-          <table class="min-w-[700px] w-full text-left text-sm">
+          <table class="min-w-[700px] w-full text-sm">
             <thead
               class="bg-slate-950/50 text-slate-400 border-b border-white/5"
             >

@@ -266,7 +266,12 @@ const qrLink = computed(() => {
                 :to="`/stats/${result.short_code}`"
                 class="text-sm font-semibold text-slate-400 hover:text-indigo-400 transition-colors"
               >
-                📊 View Analytics →
+                <Icon
+                  name="mdi:chart-box-outline"
+                  :size="25"
+                  class="text-indigo-400"
+                />
+                View Analytics
               </NuxtLink>
             </div>
           </div>
@@ -332,13 +337,17 @@ const qrLink = computed(() => {
                   :to="`/stats/${link.short_code}`"
                   class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition"
                 >
-                  📊
+                  <Icon
+                    name="mdi:chart-box-outline"
+                    :size="25"
+                    class="text-indigo-400"
+                  />
                 </NuxtLink>
                 <button
                   @click="confirmDelete(link.short_code)"
                   class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition"
                 >
-                  🗑️
+                  <Icon name="mdi:trash-can-outline" :size="25" />
                 </button>
               </div>
             </div>
